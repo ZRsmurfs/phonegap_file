@@ -20,8 +20,9 @@
     //
     function onDeviceReady() {
 		document.getElementById("aaa").innerHTML += "goes here...onready";
-        //window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, fail);
-		document.getElementById("aaa").innerHTML += "endof...onready";
+		window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
+        window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, fail);
+		document.getElementById("aaa").innerHTML += "endof111...onready";
     }
 
     function onFileSystemSuccess(fileSystem) {
