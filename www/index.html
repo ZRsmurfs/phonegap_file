@@ -11,7 +11,7 @@
 
 <script type="text/javascript" charset="utf-8">
 
-	document.getElementById("aaa").innerHTML += "goes here...init";
+	document.getElementById("aaa").innerHTML += "goes here...init<br>";
     // Wait for device API libraries to load
     //
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -19,20 +19,41 @@
     // device APIs are available
     //
     function onDeviceReady() {
-		document.getElementById("aaa").innerHTML += "goes here...onready";
+		document.getElementById("aaa").innerHTML += "goes here...onready<br>";
 		window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, fail);
-		document.getElementById("aaa").innerHTML += "endof111...onready";
+		document.getElementById("aaa").innerHTML += "endof111...onready<br>";
     }
 
     function onFileSystemSuccess(fileSystem) {
-		document.getElementById("aaa").innerHTML += "success";
+		document.getElementById("aaa").innerHTML += "success<br>";
         document.getElementById("aaa").innerHTML += fileSystem.name;
         document.getElementById("aaa").innerHTML += fileSystem.root.name;
+		
+		 fileSystem.root.getFile("test_young.txt", {create: true, exclusive: false}, gotFileEntry, fail);
+
+    }
+   function gotFileEntry(fileEntry) {
+        fileEntry.createWriter(gotFileWriter, fail);
+    }
+	function gotFileWriter(writer) {
+        writer.onwriteend = function(evt) {
+            document.getElementById("aaa").innerHTML += "contents of file now 'some sample text'<br>";
+            writer.truncate(11);
+            writer.onwriteend = function(evt) {
+                document.getElementById("aaa").innerHTML += "contents of file now 'some sample'<br>";
+                writer.seek(4);
+                writer.write(" different text");
+                writer.onwriteend = function(evt){
+                    document.getElementById("aaa").innerHTML += "contents of file now 'some different text'<br>";
+                }
+            };
+        };
+        writer.write("some sample text");
     }
 
     function fail(error) {
-		document.getElementById("aaa").innerHTML += "fail";
+		document.getElementById("aaa").innerHTML += "fail<br>";
         document.getElementById("aaa").innerHTML += error.code;
     }
 
